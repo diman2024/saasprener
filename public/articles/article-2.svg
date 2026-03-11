@@ -1,0 +1,52 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 450">
+  <defs>
+    <linearGradient id="grad2" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#0a0a0a"/>
+      <stop offset="100%" style="stop-color:#1a1a1a"/>
+    </linearGradient>
+  </defs>
+  <rect width="800" height="450" fill="url(#grad2)"/>
+  <!-- Grid pattern -->
+  <g stroke="#1f1f1f" stroke-width="1" opacity="0.5">
+    <line x1="100" y1="0" x2="100" y2="450"/>
+    <line x1="200" y1="0" x2="200" y2="450"/>
+    <line x1="300" y1="0" x2="300" y2="450"/>
+    <line x1="400" y1="0" x2="400" y2="450"/>
+    <line x1="500" y1="0" x2="500" y2="450"/>
+    <line x1="600" y1="0" x2="600" y2="450"/>
+    <line x1="700" y1="0" x2="700" y2="450"/>
+    <line x1="0" y1="90" x2="800" y2="90"/>
+    <line x1="0" y1="180" x2="800" y2="180"/>
+    <line x1="0" y1="270" x2="800" y2="270"/>
+    <line x1="0" y1="360" x2="800" y2="360"/>
+  </g>
+  <!-- Broken connection - partnership gone wrong -->
+  <circle cx="280" cy="200" r="50" fill="none" stroke="#10b981" stroke-width="2"/>
+  <circle cx="280" cy="200" r="25" fill="#10b981" opacity="0.2"/>
+  <circle cx="280" cy="200" r="10" fill="#10b981"/>
+  
+  <circle cx="520" cy="200" r="50" fill="none" stroke="#10b981" stroke-width="2"/>
+  <circle cx="520" cy="200" r="25" fill="#10b981" opacity="0.2"/>
+  <circle cx="520" cy="200" r="10" fill="#10b981"/>
+  
+  <!-- Broken line between -->
+  <line x1="330" y1="200" x2="380" y2="200" stroke="#10b981" stroke-width="2" stroke-dasharray="5,5"/>
+  <line x1="420" y1="200" x2="470" y2="200" stroke="#10b981" stroke-width="2" stroke-dasharray="5,5"/>
+  
+  <!-- Break symbol -->
+  <g transform="translate(400, 200)">
+    <line x1="-15" y1="-15" x2="15" y2="15" stroke="#ef4444" stroke-width="3"/>
+    <line x1="15" y1="-15" x2="-15" y2="15" stroke="#ef4444" stroke-width="3"/>
+  </g>
+  
+  <!-- Warning triangles -->
+  <polygon points="400,80 420,120 380,120" fill="none" stroke="#f59e0b" stroke-width="2"/>
+  <text x="400" y="112" font-family="system-ui" font-size="16" fill="#f59e0b" text-anchor="middle">!</text>
+  
+  <polygon points="400,280 420,320 380,320" fill="none" stroke="#f59e0b" stroke-width="2"/>
+  <text x="400" y="312" font-family="system-ui" font-size="16" fill="#f59e0b" text-anchor="middle">!</text>
+  
+  <!-- Label bar -->
+  <rect x="0" y="400" width="800" height="50" fill="#0f0f0f"/>
+  <text x="40" y="432" font-family="system-ui, sans-serif" font-size="14" fill="#10b981" font-weight="600" letter-spacing="2">КЕЙСЫ</text>
+</svg>

@@ -1,0 +1,71 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 450">
+  <defs>
+    <linearGradient id="grad6" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#0a0a0a"/>
+      <stop offset="100%" style="stop-color:#1a1a1a"/>
+    </linearGradient>
+  </defs>
+  <rect width="800" height="450" fill="url(#grad6)"/>
+  <!-- Grid pattern -->
+  <g stroke="#1f1f1f" stroke-width="1" opacity="0.5">
+    <line x1="100" y1="0" x2="100" y2="450"/>
+    <line x1="200" y1="0" x2="200" y2="450"/>
+    <line x1="300" y1="0" x2="300" y2="450"/>
+    <line x1="400" y1="0" x2="400" y2="450"/>
+    <line x1="500" y1="0" x2="500" y2="450"/>
+    <line x1="600" y1="0" x2="600" y2="450"/>
+    <line x1="700" y1="0" x2="700" y2="450"/>
+    <line x1="0" y1="90" x2="800" y2="90"/>
+    <line x1="0" y1="180" x2="800" y2="180"/>
+    <line x1="0" y1="270" x2="800" y2="270"/>
+    <line x1="0" y1="360" x2="800" y2="360"/>
+  </g>
+  <!-- MVP cube structure - minimal viable product -->
+  <g transform="translate(400, 180)">
+    <!-- Back face -->
+    <polygon points="-60,-30 60,-30 60,90 -60,90" fill="#10b981" opacity="0.1" stroke="#10b981" stroke-width="1"/>
+    <!-- Left face -->
+    <polygon points="-80,0 -60,-30 -60,90 -80,60" fill="#10b981" opacity="0.15" stroke="#10b981" stroke-width="1"/>
+    <!-- Top face -->
+    <polygon points="-80,0 -60,-30 60,-30 40,0" fill="#10b981" opacity="0.2" stroke="#10b981" stroke-width="1"/>
+    <!-- Front face -->
+    <polygon points="-80,0 40,0 40,120 -80,60" fill="none" stroke="#10b981" stroke-width="2"/>
+    <!-- Right face -->
+    <polygon points="40,0 60,-30 60,90 40,120" fill="none" stroke="#10b981" stroke-width="2"/>
+    <!-- Core MVP label -->
+    <rect x="-35" y="25" width="70" height="30" fill="#10b981" opacity="0.3" rx="4"/>
+    <text x="0" y="46" font-family="system-ui" font-size="14" fill="#10b981" text-anchor="middle" font-weight="bold">MVP</text>
+  </g>
+  <!-- Iteration arrows -->
+  <g stroke="#10b981" stroke-width="1.5" fill="none" opacity="0.5">
+    <!-- Arrow 1 -->
+    <path d="M 520,120 Q 560,100 580,140"/>
+    <polygon points="580,140 572,130 585,135" fill="#10b981"/>
+    <!-- Arrow 2 -->
+    <path d="M 560,180 Q 600,200 580,250"/>
+    <polygon points="580,250 585,238 575,245" fill="#10b981"/>
+    <!-- Arrow 3 -->
+    <path d="M 540,280 Q 520,320 480,320"/>
+    <polygon points="480,320 492,325 490,315" fill="#10b981"/>
+  </g>
+  <!-- Version dots -->
+  <g fill="#10b981">
+    <text x="590" y="115" font-family="monospace" font-size="12" opacity="0.6">v0.1</text>
+    <text x="600" y="200" font-family="monospace" font-size="12" opacity="0.7">v0.2</text>
+    <text x="570" y="290" font-family="monospace" font-size="12" opacity="0.8">v0.3</text>
+    <text x="460" y="340" font-family="monospace" font-size="12" opacity="0.9">v1.0</text>
+  </g>
+  <!-- Checkmarks for iterations -->
+  <g stroke="#10b981" stroke-width="2" fill="none">
+    <path d="M200,150 L210,160 L225,140"/>
+    <path d="M200,190 L210,200 L225,180"/>
+    <path d="M200,230 L210,240 L225,220"/>
+  </g>
+  <!-- Labels -->
+  <text x="235" y="155" font-family="system-ui" font-size="12" fill="#666">BUILD</text>
+  <text x="235" y="195" font-family="system-ui" font-size="12" fill="#666">MEASURE</text>
+  <text x="235" y="235" font-family="system-ui" font-size="12" fill="#666">LEARN</text>
+  <!-- Label bar -->
+  <rect x="0" y="400" width="800" height="50" fill="#0f0f0f"/>
+  <text x="40" y="432" font-family="system-ui, sans-serif" font-size="14" fill="#10b981" font-weight="600" letter-spacing="2">MVP</text>
+</svg>
