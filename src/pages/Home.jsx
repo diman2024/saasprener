@@ -225,7 +225,7 @@ export default function Home() {
             <div className="animated-border-box p-[1px] rounded-none mb-8">
               <div className="animated-border-box-inner bg-[#0a0a0a] px-4 py-2 flex items-center gap-2">
                 <span className="w-2 h-2 rounded-none bg-emerald-500 animate-pulse"></span>
-                <span className="text-emerald-400 text-xs font-black uppercase tracking-widest">Набор на личное обучение открыт</span>
+                <span className="text-emerald-400 text-xs font-black uppercase tracking-widest">Набор в группы до 20 человек открыт</span>
               </div>
             </div>
 

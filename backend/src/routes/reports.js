@@ -22,15 +22,37 @@ router.get('/today', (req, res) => {
   }
 });
 
+// GET /api/reports/full
+// Полная статистика (сегодня + всего)
+router.get('/full', (req, res) => {
+  try {
+    const todayStats = telegramBot.getTodayStats();
+    const allTimeStats = telegramBot.getAllTimeStats();
+    const formatted = telegramBot.formatFullStats(todayStats, allTimeStats);
+    
+    res.json({ 
+      today: todayStats,
+      allTime: allTimeStats,
+      formatted,
+      would_send_to: telegramBot.getAdminChatId() || 'not configured'
+    });
+  } catch (error) {
+    console.error('Full stats error:', error);
+    res.status(500).json({ error: 'Failed to get full stats' });
+  }
+});
+
 // GET /api/reports/daily-preview
 // Предпросмотр ежедневного отчёта
 router.get('/daily-preview', (req, res) => {
   try {
-    const stats = telegramBot.getTodayStats();
-    const text = telegramBot.formatTodayStats(stats);
+    const todayStats = telegramBot.getTodayStats();
+    const allTimeStats = telegramBot.getAllTimeStats();
+    const text = telegramBot.formatFullStats(todayStats, allTimeStats);
     
     res.json({ 
-      stats,
+      today: todayStats,
+      allTime: allTimeStats,
       formatted: text,
       would_send_to: telegramBot.getAdminChatId() || 'not configured'
     });

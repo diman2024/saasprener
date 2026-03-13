@@ -132,6 +132,7 @@ async function initialize() {
 
 /start — Начать работу с ботом
 /today — Статистика за сегодня
+/full — Полный отчёт (сегодня + всего)
 /stats — Краткая сводка
 /help — Эта справка
 
@@ -155,18 +156,43 @@ async function initialize() {
     }
   });
   
+  // Обработка /full - полный отчёт
+  bot.onText(/\/full/, async (msg) => {
+    const chatId = msg.chat.id;
+    
+    try {
+      const todayStats = getTodayStats();
+      const allTimeStats = getAllTimeStats();
+      const text = formatFullStats(todayStats, allTimeStats);
+      bot.sendMessage(chatId, text, { parse_mode: 'Markdown' });
+    } catch (err) {
+      console.error('Error getting full stats:', err);
+      bot.sendMessage(chatId, '❌ Ошибка получения статистики');
+    }
+  });
+  
   // Обработка /stats
   bot.onText(/\/stats/, async (msg) => {
     const chatId = msg.chat.id;
     
     try {
-      const stats = getTodayStats();
-      const text = `📊 **Краткая статистика сегодня**
+      const todayStats = getTodayStats();
+      const allTimeStats = getAllTimeStats();
+      const text = `📊 **Краткая статистика**
 
-👥 Визиты: ${stats.visits}
-📝 Заявки: ${stats.leads}
-💰 Оплаты: ${stats.payments}
-💵 Выручка: ${formatMoney(stats.revenue)}`;
+**Сегодня**
+👥 Визиты: ${todayStats.visits}
+📝 Заявки: ${todayStats.leads}
+💰 Оплаты: ${todayStats.payments}
+💵 Выручка: ${formatMoney(todayStats.revenue)}
+
+**Всего** _(${allTimeStats.daysActive} дн.)_
+👥 Визиты: ${allTimeStats.visits}
+📝 Заявки: ${allTimeStats.leads}
+💰 Оплаты: ${allTimeStats.payments}
+💵 Выручка: ${formatMoney(allTimeStats.revenue)}
+
+_Для полного отчёта: /full_`;
 
       bot.sendMessage(chatId, text, { parse_mode: 'Markdown' });
     } catch (err) {
@@ -246,6 +272,75 @@ function getTodayStats() {
   };
 }
 
+// Получить общую статистику за всё время
+function getAllTimeStats() {
+  const visits = db.get(`
+    SELECT COUNT(*) as count FROM events WHERE event_name = 'page_view'
+  `)?.count || 0;
+  
+  const uniqueVisitors = db.get(`
+    SELECT COUNT(DISTINCT visitor_id) as count FROM events 
+    WHERE event_name = 'page_view' AND visitor_id IS NOT NULL
+  `)?.count || 0;
+  
+  const telegramClicks = db.get(`
+    SELECT COUNT(*) as count FROM events WHERE event_name = 'telegram_click'
+  `)?.count || 0;
+  
+  const botStarts = db.get(`
+    SELECT COUNT(*) as count FROM events WHERE event_name = 'telegram_bot_start'
+  `)?.count || 0;
+  
+  const telegramUsers = db.get(`
+    SELECT COUNT(*) as count FROM telegram_users
+  `)?.count || 0;
+  
+  const leads = db.get(`SELECT COUNT(*) as count FROM leads`)?.count || 0;
+  
+  const paymentsData = db.get(`
+    SELECT COUNT(*) as count, COALESCE(SUM(amount), 0) as total 
+    FROM payments WHERE status = 'paid'
+  `) || { count: 0, total: 0 };
+  
+  const topPages = db.all(`
+    SELECT page_path, COUNT(*) as views FROM events 
+    WHERE event_name = 'page_view' AND page_path IS NOT NULL
+    GROUP BY page_path ORDER BY views DESC LIMIT 5
+  `);
+  
+  const sources = db.all(`
+    SELECT 
+      COALESCE(utm_source, 'direct') as source, 
+      COUNT(*) as count 
+    FROM sessions 
+    GROUP BY source ORDER BY count DESC LIMIT 5
+  `);
+  
+  // Первая дата события
+  const firstEvent = db.get(`SELECT MIN(created_at) as date FROM events`);
+  const firstDate = firstEvent?.date ? new Date(firstEvent.date).toLocaleDateString('ru-RU') : '-';
+  
+  // Дней работы
+  const daysActive = firstEvent?.date 
+    ? Math.ceil((new Date() - new Date(firstEvent.date)) / (1000 * 60 * 60 * 24)) 
+    : 0;
+  
+  return {
+    visits,
+    uniqueVisitors,
+    telegramClicks,
+    botStarts,
+    telegramUsers,
+    leads,
+    payments: paymentsData.count,
+    revenue: paymentsData.total,
+    topPages,
+    sources,
+    firstDate,
+    daysActive
+  };
+}
+
 // Форматирование статистики за сегодня
 function formatTodayStats(stats) {
   const crVisitToLead = stats.visits > 0 ? ((stats.leads / stats.visits) * 100).toFixed(2) : 0;
@@ -283,6 +378,79 @@ _${stats.date} MSK_
   if (stats.sources && stats.sources.length > 0) {
     text += '\n\n**Источники**';
     stats.sources.forEach((s) => {
+      text += `\n• ${s.source}: ${s.count}`;
+    });
+  }
+  
+  return text;
+}
+
+// Форматирование полной статистики (сегодня + всего)
+function formatFullStats(todayStats, allTimeStats) {
+  const crVisitToLead = todayStats.visits > 0 ? ((todayStats.leads / todayStats.visits) * 100).toFixed(2) : 0;
+  const crLeadToPaid = todayStats.leads > 0 ? ((todayStats.payments / todayStats.leads) * 100).toFixed(2) : 0;
+  const crTgClickToStart = todayStats.telegramClicks > 0 ? ((todayStats.botStarts / todayStats.telegramClicks) * 100).toFixed(2) : 0;
+  
+  const allCrVisitToLead = allTimeStats.visits > 0 ? ((allTimeStats.leads / allTimeStats.visits) * 100).toFixed(2) : 0;
+  const allCrLeadToPaid = allTimeStats.leads > 0 ? ((allTimeStats.payments / allTimeStats.leads) * 100).toFixed(2) : 0;
+  
+  let text = `📊 **Полная статистика SAASPRENER**
+_${todayStats.date} MSK_
+
+━━━━━━━━━━━━━━━━━━━━
+
+📅 **СЕГОДНЯ**
+
+**Трафик**
+👥 Визиты: ${todayStats.visits}
+👤 Уники: ${todayStats.uniqueVisitors}
+
+**Telegram**
+🔗 Клики TG: ${todayStats.telegramClicks}
+🤖 Старты бота: ${todayStats.botStarts}
+
+**Конверсии**
+📝 Заявки: ${todayStats.leads}
+💰 Оплаты: ${todayStats.payments}
+💵 Выручка: ${formatMoney(todayStats.revenue)}
+
+**CR сегодня**
+📊 Визит→заявка: ${crVisitToLead}%
+📊 Заявка→оплата: ${crLeadToPaid}%
+📊 TG клик→бот: ${crTgClickToStart}%
+
+━━━━━━━━━━━━━━━━━━━━
+
+📈 **ВСЕГО** _(с ${allTimeStats.firstDate}, ${allTimeStats.daysActive} дн.)_
+
+**Трафик**
+👥 Визиты: ${allTimeStats.visits}
+👤 Уники: ${allTimeStats.uniqueVisitors}
+
+**Telegram**
+🔗 Клики TG: ${allTimeStats.telegramClicks}
+🤖 Старты бота: ${allTimeStats.botStarts}
+👤 Юзеры бота: ${allTimeStats.telegramUsers}
+
+**Конверсии**
+📝 Заявки: ${allTimeStats.leads}
+💰 Оплаты: ${allTimeStats.payments}
+💵 Выручка: ${formatMoney(allTimeStats.revenue)}
+
+**CR за всё время**
+📊 Визит→заявка: ${allCrVisitToLead}%
+📊 Заявка→оплата: ${allCrLeadToPaid}%`;
+
+  if (allTimeStats.topPages && allTimeStats.topPages.length > 0) {
+    text += '\n\n**📄 Топ страницы (всего)**';
+    allTimeStats.topPages.forEach((p, i) => {
+      text += `\n${i + 1}. ${p.page_path} — ${p.views}`;
+    });
+  }
+  
+  if (allTimeStats.sources && allTimeStats.sources.length > 0) {
+    text += '\n\n**🔗 Источники (всего)**';
+    allTimeStats.sources.forEach((s) => {
       text += `\n• ${s.source}: ${s.count}`;
     });
   }
@@ -365,11 +533,13 @@ async function sendDailyReport() {
   }
   
   try {
-    const stats = getTodayStats();
+    const todayStats = getTodayStats();
+    const allTimeStats = getAllTimeStats();
+    
     const text = `📈 **Ежедневный отчёт SAASPRENER**
 _${new Date().toLocaleDateString('ru-RU')} — ${formatDateMSK()} MSK_
 
-${formatTodayStats(stats).replace('**Статистика за сегодня**', '').replace(/\n_.*MSK_/, '')}
+${formatFullStats(todayStats, allTimeStats).replace('📊 **Полная статистика SAASPRENER**', '').replace(/\n_.*MSK_\n/, '')}
 
 ---
 _Отчёт сформирован автоматически_`;
@@ -381,7 +551,7 @@ _Отчёт сформирован автоматически_`;
       new Date().toISOString().split('T')[0],
       new Date().toISOString(),
       adminChatId,
-      JSON.stringify(stats),
+      JSON.stringify({ today: todayStats, allTime: allTimeStats }),
       'sent',
       null
     );
@@ -421,7 +591,9 @@ module.exports = {
   sendDailyReport,
   sendTestMessage,
   getTodayStats,
+  getAllTimeStats,
   formatTodayStats,
+  formatFullStats,
   getBot: () => bot,
   getAdminChatId: () => adminChatId
 };

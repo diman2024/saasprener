@@ -20,6 +20,7 @@ const leadsRoutes = require('./src/routes/leads');
 const paymentsRoutes = require('./src/routes/payments');
 const reportsRoutes = require('./src/routes/reports');
 const telegramRoutes = require('./src/routes/telegram');
+const yookassaRoutes = require('./src/routes/yookassa');
 
 const app = express();
 const PORT = process.env.PORT || 3001;
@@ -50,6 +51,7 @@ app.use('/api/leads', leadsRoutes);
 app.use('/api/payments', paymentsRoutes);
 app.use('/api/reports', reportsRoutes);
 app.use('/api/telegram', telegramRoutes);
+app.use('/api/yookassa', yookassaRoutes);
 
 // Error handler
 app.use((err, req, res, next) => {

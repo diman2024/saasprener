@@ -149,18 +149,19 @@ export function ApplicationModal({ isOpen, onClose }) {
   );
 }
 
-// Модальное окно предоплаты
+// Модальное окно предоплаты с оплатой через YooKassa
 export function PrepaymentModal({ isOpen, onClose }) {
   const [agreed, setAgreed] = useState(false);
   const [agreedTerms, setAgreedTerms] = useState(false);
   const [formData, setFormData] = useState({
     name: '',
-    contact: '',
+    phone: '',
     email: ''
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [isSubmitted, setIsSubmitted] = useState(false);
   const [error, setError] = useState(null);
+
+  const API_BASE = import.meta.env.VITE_API_URL || 'https://saasprener.online/api';
 
   // Трекинг открытия формы
   useEffect(() => {
@@ -179,26 +180,45 @@ export function PrepaymentModal({ isOpen, onClose }) {
     setError(null);
     
     try {
-      await submitLead({
-        name: formData.name,
-        telegram: formData.contact.replace('@', ''),
-        email: formData.email,
-        source_type: 'prepayment'
+      // Создаем платеж через YooKassa API
+      const response = await fetch(`${API_BASE}/yookassa/create-payment`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          name: formData.name,
+          email: formData.email,
+          phone: formData.phone,
+          amount: courseConfig.prepaymentAmount,
+          description: `Предоплата за курс SAASPRENER — ${courseConfig.streamName}`
+        })
       });
-      
-      trackFormSubmitted('prepayment');
-      setIsSubmitted(true);
-      
-      setTimeout(() => {
-        onClose();
-        setIsSubmitted(false);
-        setAgreed(false);
-        setAgreedTerms(false);
-        setFormData({ name: '', contact: '', email: '' });
-      }, 2000);
+
+      const data = await response.json();
+
+      if (data.success && data.confirmation_url) {
+        // Сохраняем payment_id для проверки после возврата
+        localStorage.setItem('sp_pending_payment', data.payment_id);
+        
+        // Трекинг
+        trackFormSubmitted('prepayment_payment');
+        
+        // Отправляем в Яндекс Метрику
+        if (typeof window !== 'undefined' && window.ym) {
+          window.ym(98650651, 'reachGoal', 'payment_started', {
+            amount: courseConfig.prepaymentAmount
+          });
+        }
+
+        // Редирект на страницу оплаты YooKassa
+        window.location.href = data.confirmation_url;
+      } else {
+        throw new Error(data.error || 'Не удалось создать платеж');
+      }
     } catch (err) {
-      console.error('Submit error:', err);
-      setError('Ошибка отправки. Попробуй ещё раз или напиши в Telegram @saasprener');
+      console.error('Payment error:', err);
+      setError('Ошибка создания платежа. Попробуй ещё раз или напиши в Telegram @saasprener');
     } finally {
       setIsSubmitting(false);
     }
@@ -210,120 +230,113 @@ export function PrepaymentModal({ isOpen, onClose }) {
 
   return (
     <ModalWrapper onClose={onClose}>
-      {isSubmitted ? (
-        <SuccessState 
-          title="Заявка на предоплату принята!" 
-          message="Я отправлю реквизиты для оплаты в ближайшее время"
-        />
-      ) : (
-        <>
-          <ModalHeader 
-            title="Внести предоплату" 
-            subtitle={`Сумма: ${formatPrice(courseConfig.prepaymentAmount)}`}
-            onClose={onClose}
-          />
-          
-          {error && (
-            <div className="bg-red-500/10 border border-red-500/30 p-3 mb-4 text-red-400 text-sm">
-              {error}
-            </div>
-          )}
-          
-          {/* Предупреждение */}
-          <div className="bg-amber-500/10 border border-amber-500/30 p-4 mb-6">
-            <div className="flex items-start gap-3">
-              <AlertTriangle className="w-5 h-5 text-amber-500 flex-shrink-0 mt-0.5" />
-              <div>
-                <p className="text-amber-400 font-bold text-sm uppercase tracking-wide mb-1">
-                  Важно
-                </p>
-                <p className="text-amber-200/80 text-sm leading-relaxed">
-                  Предоплата фиксирует место и текущую цену. Предоплата невозвратная.
-                </p>
-              </div>
-            </div>
-          </div>
-          
-          <form onSubmit={handleSubmit} className="space-y-5">
-            <FormInput
-              label="Имя"
-              name="name"
-              value={formData.name}
-              onChange={handleChange}
-              placeholder="Как тебя зовут?"
-              required
-            />
-            
-            <FormInput
-              label="Telegram"
-              name="contact"
-              value={formData.contact}
-              onChange={handleChange}
-              placeholder="@username"
-              required
-            />
-            
-            <FormInput
-              label="Email"
-              name="email"
-              type="email"
-              value={formData.email}
-              onChange={handleChange}
-              placeholder="email@example.com"
-              required
-            />
-            
-            {/* Чекбоксы согласия */}
-            <div className="space-y-3 pt-2">
-              <label className="flex items-start gap-3 cursor-pointer group">
-                <input
-                  type="checkbox"
-                  checked={agreed}
-                  onChange={(e) => setAgreed(e.target.checked)}
-                  className="mt-1 w-4 h-4 accent-emerald-500"
-                />
-                <span className="text-sm text-zinc-400 group-hover:text-zinc-300 transition-colors">
-                  Я понимаю, что предоплата <strong className="text-white">невозвратная</strong>
-                </span>
-              </label>
-              
-              <label className="flex items-start gap-3 cursor-pointer group">
-                <input
-                  type="checkbox"
-                  checked={agreedTerms}
-                  onChange={(e) => setAgreedTerms(e.target.checked)}
-                  className="mt-1 w-4 h-4 accent-emerald-500"
-                />
-                <span className="text-sm text-zinc-400 group-hover:text-zinc-300 transition-colors">
-                  Я согласен с условиями участия
-                </span>
-              </label>
-            </div>
-            
-            <button
-              type="submit"
-              disabled={isSubmitting || !agreed || !agreedTerms}
-              className="w-full bg-emerald-500 text-zinc-950 py-4 font-black text-lg uppercase tracking-widest hover:bg-emerald-400 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-3"
-            >
-              {isSubmitting ? (
-                <>
-                  <span className="animate-spin">⏳</span>
-                  Обработка...
-                </>
-              ) : (
-                <>
-                  <CreditCard className="w-5 h-5" />
-                  Получить реквизиты
-                </>
-              )}
-            </button>
-            
-            <p className="text-xs text-zinc-600 text-center">
-              После отправки заявки я пришлю реквизиты для оплаты
-            </p>
-          </form>
-        </>
+      <ModalHeader 
+        title="Внести предоплату" 
+        subtitle={`Сумма: ${formatPrice(courseConfig.prepaymentAmount)}`}
+        onClose={onClose}
+      />
+      
+      {error && (
+        <div className="bg-red-500/10 border border-red-500/30 p-3 mb-4 text-red-400 text-sm">
+          {error}
+        </div>
       )}
+      
+      {/* Предупреждение */}
+      <div className="bg-amber-500/10 border border-amber-500/30 p-4 mb-6">
+        <div className="flex items-start gap-3">
+          <AlertTriangle className="w-5 h-5 text-amber-500 flex-shrink-0 mt-0.5" />
+          <div>
+            <p className="text-amber-400 font-bold text-sm uppercase tracking-wide mb-1">
+              Важно
+            </p>
+            <p className="text-amber-200/80 text-sm leading-relaxed">
+              Предоплата фиксирует место и текущую цену. Предоплата невозвратная.
+            </p>
+          </div>
+        </div>
+      </div>
+      
+      <form onSubmit={handleSubmit} className="space-y-5">
+        <FormInput
+          label="Имя"
+          name="name"
+          value={formData.name}
+          onChange={handleChange}
+          placeholder="Как тебя зовут?"
+          required
+        />
+        
+        <FormInput
+          label="Email"
+          name="email"
+          type="email"
+          value={formData.email}
+          onChange={handleChange}
+          placeholder="email@example.com"
+          helperText="На email придёт чек об оплате"
+          required
+        />
+        
+        <FormInput
+          label="Телефон"
+          name="phone"
+          type="tel"
+          value={formData.phone}
+          onChange={handleChange}
+          placeholder="+7 (999) 123-45-67"
+          required
+        />
+        
+        {/* Чекбоксы согласия */}
+        <div className="space-y-3 pt-2">
+          <label className="flex items-start gap-3 cursor-pointer group">
+            <input
+              type="checkbox"
+              checked={agreed}
+              onChange={(e) => setAgreed(e.target.checked)}
+              className="mt-1 w-4 h-4 accent-emerald-500"
+            />
+            <span className="text-sm text-zinc-400 group-hover:text-zinc-300 transition-colors">
+              Я понимаю, что предоплата <strong className="text-white">невозвратная</strong>
+            </span>
+          </label>
+          
+          <label className="flex items-start gap-3 cursor-pointer group">
+            <input
+              type="checkbox"
+              checked={agreedTerms}
+              onChange={(e) => setAgreedTerms(e.target.checked)}
+              className="mt-1 w-4 h-4 accent-emerald-500"
+            />
+            <span className="text-sm text-zinc-400 group-hover:text-zinc-300 transition-colors">
+              Я согласен с условиями участия
+            </span>
+          </label>
+        </div>
+        
+        <button
+          type="submit"
+          disabled={isSubmitting || !agreed || !agreedTerms}
+          className="w-full bg-emerald-500 text-zinc-950 py-4 font-black text-lg uppercase tracking-widest hover:bg-emerald-400 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-3"
+        >
+          {isSubmitting ? (
+            <>
+              <span className="animate-spin">⏳</span>
+              Создание платежа...
+            </>
+          ) : (
+            <>
+              <CreditCard className="w-5 h-5" />
+              Оплатить {formatPrice(courseConfig.prepaymentAmount)}
+            </>
+          )}
+        </button>
+        
+        <p className="text-xs text-zinc-600 text-center">
+          Оплата через защищённый сервис ЮKassa
+        </p>
+      </form>
     </ModalWrapper>
   );
 }
@@ -415,7 +428,7 @@ function SuccessState({ title, message }) {
   );
 }
 
-function FormInput({ label, name, value, onChange, placeholder, type = 'text', required = false }) {
+function FormInput({ label, name, value, onChange, placeholder, type = 'text', required = false, helperText }) {
   return (
     <div>
       <label className="block text-xs font-bold uppercase tracking-widest text-zinc-500 mb-2">
@@ -430,6 +443,9 @@ function FormInput({ label, name, value, onChange, placeholder, type = 'text', r
         required={required}
         className="w-full bg-zinc-900 border border-zinc-800 px-4 py-3 text-white placeholder:text-zinc-600 focus:border-emerald-500 focus:outline-none transition-colors"
       />
+      {helperText && (
+        <p className="text-xs text-zinc-600 mt-1">{helperText}</p>
+      )}
     </div>
   );
 }

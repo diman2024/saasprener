@@ -8,8 +8,11 @@ import Article from './pages/Article';
 import Cases from './pages/Cases';
 import Case from './pages/Case';
 import Hub from './pages/Hub';
+import Payment from './pages/Payment';
+import PaymentSuccess from './pages/PaymentSuccess';
+import { trackPageView } from './utils/analytics';
 
-// Компонент для прокрутки наверх при переходе между страницами
+// Компонент для прокрутки наверх и трекинга при переходе между страницами
 function ScrollToTop() {
   const { pathname, hash } = useLocation();
 
@@ -17,6 +20,8 @@ function ScrollToTop() {
     if (!hash) {
       window.scrollTo(0, 0);
     }
+    // Трекаем просмотр страницы при SPA-навигации
+    trackPageView();
   }, [pathname, hash]);
 
   return null;
@@ -57,6 +62,10 @@ export default function App() {
           
           {/* Хаб-страницы */}
           <Route path="/hub/:slug" element={<Hub />} />
+          
+          {/* Оплата */}
+          <Route path="/payment" element={<Payment />} />
+          <Route path="/payment-success" element={<PaymentSuccess />} />
           
           {/* 404 */}
           <Route path="*" element={<NotFound />} />

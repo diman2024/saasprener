@@ -106,7 +106,7 @@ export default function CourseSection() {
                 <div className="flex items-center gap-3">
                   <Sparkles className="w-5 h-5 text-emerald-500" />
                   <span className="text-sm text-zinc-400">
-                    Личная работа
+                    Группы до 20 человек
                   </span>
                 </div>
               </div>
@@ -201,7 +201,7 @@ export default function CourseSection() {
                   <div className="mt-8 pt-6 border-t border-zinc-800 space-y-2">
                     <div className="flex items-center gap-2 text-xs text-zinc-500">
                       <Clock className="w-3 h-3" />
-                      <span>Места ограничены — я лично работаю с каждым</span>
+                      <span>Места ограничены — набор в группы до 20 человек</span>
                     </div>
                     <div className="flex items-center gap-2 text-xs text-zinc-500">
                       <Calendar className="w-3 h-3" />
