@@ -1,0 +1,52 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 450">
+  <defs>
+    <linearGradient id="grad1" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#0a0a0a"/>
+      <stop offset="100%" style="stop-color:#1a1a1a"/>
+    </linearGradient>
+    <linearGradient id="emerald1" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#10b981"/>
+      <stop offset="100%" style="stop-color:#059669"/>
+    </linearGradient>
+  </defs>
+  <rect width="800" height="450" fill="url(#grad1)"/>
+  <!-- Grid pattern -->
+  <g stroke="#1f1f1f" stroke-width="1" opacity="0.5">
+    <line x1="100" y1="0" x2="100" y2="450"/>
+    <line x1="200" y1="0" x2="200" y2="450"/>
+    <line x1="300" y1="0" x2="300" y2="450"/>
+    <line x1="400" y1="0" x2="400" y2="450"/>
+    <line x1="500" y1="0" x2="500" y2="450"/>
+    <line x1="600" y1="0" x2="600" y2="450"/>
+    <line x1="700" y1="0" x2="700" y2="450"/>
+    <line x1="0" y1="90" x2="800" y2="90"/>
+    <line x1="0" y1="180" x2="800" y2="180"/>
+    <line x1="0" y1="270" x2="800" y2="270"/>
+    <line x1="0" y1="360" x2="800" y2="360"/>
+  </g>
+  <!-- Solo figure - single hexagon -->
+  <polygon points="400,120 480,165 480,255 400,300 320,255 320,165" fill="none" stroke="url(#emerald1)" stroke-width="3"/>
+  <polygon points="400,150 450,180 450,240 400,270 350,240 350,180" fill="#10b981" opacity="0.2"/>
+  <!-- Connection nodes -->
+  <circle cx="400" cy="210" r="15" fill="#10b981"/>
+  <circle cx="400" cy="210" r="8" fill="#0a0a0a"/>
+  <!-- Radiating lines -->
+  <g stroke="#10b981" stroke-width="1" opacity="0.6">
+    <line x1="400" y1="120" x2="400" y2="60"/>
+    <line x1="480" y1="165" x2="540" y2="140"/>
+    <line x1="480" y1="255" x2="540" y2="280"/>
+    <line x1="400" y1="300" x2="400" y2="360"/>
+    <line x1="320" y1="255" x2="260" y2="280"/>
+    <line x1="320" y1="165" x2="260" y2="140"/>
+  </g>
+  <!-- Small accent dots -->
+  <circle cx="400" cy="60" r="4" fill="#10b981"/>
+  <circle cx="540" cy="140" r="4" fill="#10b981"/>
+  <circle cx="540" cy="280" r="4" fill="#10b981"/>
+  <circle cx="400" cy="360" r="4" fill="#10b981"/>
+  <circle cx="260" cy="280" r="4" fill="#10b981"/>
+  <circle cx="260" cy="140" r="4" fill="#10b981"/>
+  <!-- Label bar -->
+  <rect x="0" y="400" width="800" height="50" fill="#0f0f0f"/>
+  <text x="40" y="432" font-family="system-ui, sans-serif" font-size="14" fill="#10b981" font-weight="600" letter-spacing="2">SAAS</text>
+</svg>

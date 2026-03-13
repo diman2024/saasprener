@@ -1,0 +1,32 @@
+# Robots.txt for SAASPRENER
+# https://saasprener.online
+
+User-agent: *
+Allow: /
+
+# Sitemap
+Sitemap: https://saasprener.online/sitemap.xml
+
+# Разрешаем ботам соцсетей
+User-agent: TelegramBot
+Allow: /
+
+User-agent: facebookexternalhit
+Allow: /
+
+User-agent: Twitterbot
+Allow: /
+
+User-agent: LinkedInBot
+Allow: /
+
+User-agent: Slackbot
+Allow: /
+
+User-agent: WhatsApp
+Allow: /
+
+User-agent: vkShare
+Allow: /
+
+Sitemap: https://saasprener.online/sitemap.xml

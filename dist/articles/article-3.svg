@@ -1,0 +1,58 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 450">
+  <defs>
+    <linearGradient id="grad3" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#0a0a0a"/>
+      <stop offset="100%" style="stop-color:#1a1a1a"/>
+    </linearGradient>
+    <linearGradient id="rocketGrad" x1="0%" y1="100%" x2="0%" y2="0%">
+      <stop offset="0%" style="stop-color:#059669"/>
+      <stop offset="100%" style="stop-color:#10b981"/>
+    </linearGradient>
+  </defs>
+  <rect width="800" height="450" fill="url(#grad3)"/>
+  <!-- Grid pattern -->
+  <g stroke="#1f1f1f" stroke-width="1" opacity="0.5">
+    <line x1="100" y1="0" x2="100" y2="450"/>
+    <line x1="200" y1="0" x2="200" y2="450"/>
+    <line x1="300" y1="0" x2="300" y2="450"/>
+    <line x1="400" y1="0" x2="400" y2="450"/>
+    <line x1="500" y1="0" x2="500" y2="450"/>
+    <line x1="600" y1="0" x2="600" y2="450"/>
+    <line x1="700" y1="0" x2="700" y2="450"/>
+    <line x1="0" y1="90" x2="800" y2="90"/>
+    <line x1="0" y1="180" x2="800" y2="180"/>
+    <line x1="0" y1="270" x2="800" y2="270"/>
+    <line x1="0" y1="360" x2="800" y2="360"/>
+  </g>
+  <!-- Launch arrow/rocket shape -->
+  <g transform="translate(400, 200)">
+    <!-- Main rocket body -->
+    <path d="M0,-100 L30,-30 L20,-30 L20,60 L-20,60 L-20,-30 L-30,-30 Z" fill="url(#rocketGrad)" opacity="0.9"/>
+    <!-- Window -->
+    <circle cx="0" cy="-20" r="12" fill="#0a0a0a"/>
+    <circle cx="0" cy="-20" r="8" fill="#10b981" opacity="0.5"/>
+    <!-- Fins -->
+    <path d="M-20,40 L-45,70 L-20,60 Z" fill="#059669"/>
+    <path d="M20,40 L45,70 L20,60 Z" fill="#059669"/>
+    <!-- Flame -->
+    <ellipse cx="0" cy="80" rx="15" ry="25" fill="#f59e0b" opacity="0.8"/>
+    <ellipse cx="0" cy="85" rx="8" ry="15" fill="#fbbf24"/>
+  </g>
+  <!-- Motion lines -->
+  <g stroke="#10b981" stroke-width="1" opacity="0.4">
+    <line x1="340" y1="280" x2="340" y2="350"/>
+    <line x1="360" y1="290" x2="360" y2="370"/>
+    <line x1="440" y1="290" x2="440" y2="370"/>
+    <line x1="460" y1="280" x2="460" y2="350"/>
+  </g>
+  <!-- Stars -->
+  <circle cx="250" cy="100" r="2" fill="#10b981"/>
+  <circle cx="550" cy="80" r="2" fill="#10b981"/>
+  <circle cx="620" cy="150" r="2" fill="#10b981"/>
+  <circle cx="180" cy="160" r="2" fill="#10b981"/>
+  <circle cx="280" cy="250" r="1.5" fill="#10b981" opacity="0.6"/>
+  <circle cx="520" cy="260" r="1.5" fill="#10b981" opacity="0.6"/>
+  <!-- Label bar -->
+  <rect x="0" y="400" width="800" height="50" fill="#0f0f0f"/>
+  <text x="40" y="432" font-family="system-ui, sans-serif" font-size="14" fill="#10b981" font-weight="600" letter-spacing="2">ЗАПУСК</text>
+</svg>

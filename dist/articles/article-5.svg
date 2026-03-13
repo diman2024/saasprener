@@ -1,0 +1,55 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 450">
+  <defs>
+    <linearGradient id="grad5" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#0a0a0a"/>
+      <stop offset="100%" style="stop-color:#1a1a1a"/>
+    </linearGradient>
+    <linearGradient id="barGrad" x1="0%" y1="100%" x2="0%" y2="0%">
+      <stop offset="0%" style="stop-color:#059669"/>
+      <stop offset="100%" style="stop-color:#10b981"/>
+    </linearGradient>
+  </defs>
+  <rect width="800" height="450" fill="url(#grad5)"/>
+  <!-- Grid pattern -->
+  <g stroke="#1f1f1f" stroke-width="1" opacity="0.5">
+    <line x1="100" y1="0" x2="100" y2="450"/>
+    <line x1="200" y1="0" x2="200" y2="450"/>
+    <line x1="300" y1="0" x2="300" y2="450"/>
+    <line x1="400" y1="0" x2="400" y2="450"/>
+    <line x1="500" y1="0" x2="500" y2="450"/>
+    <line x1="600" y1="0" x2="600" y2="450"/>
+    <line x1="700" y1="0" x2="700" y2="450"/>
+    <line x1="0" y1="90" x2="800" y2="90"/>
+    <line x1="0" y1="180" x2="800" y2="180"/>
+    <line x1="0" y1="270" x2="800" y2="270"/>
+    <line x1="0" y1="360" x2="800" y2="360"/>
+  </g>
+  <!-- Growth chart -->
+  <!-- Axis -->
+  <line x1="180" y1="340" x2="620" y2="340" stroke="#3f3f3f" stroke-width="2"/>
+  <line x1="180" y1="340" x2="180" y2="80" stroke="#3f3f3f" stroke-width="2"/>
+  <!-- Bars -->
+  <rect x="220" y="280" width="40" height="60" fill="url(#barGrad)" opacity="0.6"/>
+  <rect x="290" y="240" width="40" height="100" fill="url(#barGrad)" opacity="0.7"/>
+  <rect x="360" y="200" width="40" height="140" fill="url(#barGrad)" opacity="0.8"/>
+  <rect x="430" y="150" width="40" height="190" fill="url(#barGrad)" opacity="0.9"/>
+  <rect x="500" y="100" width="40" height="240" fill="url(#barGrad)"/>
+  <!-- Growth line -->
+  <polyline points="240,270 310,230 380,190 450,140 520,90" 
+            fill="none" stroke="#10b981" stroke-width="3" stroke-linecap="round"/>
+  <!-- Data points -->
+  <circle cx="240" cy="270" r="6" fill="#0a0a0a" stroke="#10b981" stroke-width="2"/>
+  <circle cx="310" cy="230" r="6" fill="#0a0a0a" stroke="#10b981" stroke-width="2"/>
+  <circle cx="380" cy="190" r="6" fill="#0a0a0a" stroke="#10b981" stroke-width="2"/>
+  <circle cx="450" cy="140" r="6" fill="#0a0a0a" stroke="#10b981" stroke-width="2"/>
+  <circle cx="520" cy="90" r="8" fill="#10b981"/>
+  <!-- Arrow up -->
+  <polygon points="580,90 600,130 590,130 590,180 570,180 570,130 560,130" fill="#10b981" opacity="0.8"/>
+  <!-- Dollar signs -->
+  <text x="560" y="230" font-family="system-ui" font-size="24" fill="#10b981" opacity="0.4">$</text>
+  <text x="590" y="280" font-family="system-ui" font-size="20" fill="#10b981" opacity="0.3">$</text>
+  <text x="610" y="320" font-family="system-ui" font-size="16" fill="#10b981" opacity="0.2">$</text>
+  <!-- Label bar -->
+  <rect x="0" y="400" width="800" height="50" fill="#0f0f0f"/>
+  <text x="40" y="432" font-family="system-ui, sans-serif" font-size="14" fill="#10b981" font-weight="600" letter-spacing="2">МОНЕТИЗАЦИЯ</text>
+</svg>
