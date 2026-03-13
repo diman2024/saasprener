@@ -14,3 +14,6 @@ ReactDOM.createRoot(document.getElementById('root')).render(
     </HelmetProvider>
   </React.StrictMode>
 );
+
+// Сигнал для prerender - страница готова
+document.dispatchEvent(new Event('render-event'));
